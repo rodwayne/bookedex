@@ -1,8 +1,10 @@
 package com.alura.bookedex.main;
 
 import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import com.alura.bookedex.model.BookData;
 import com.alura.bookedex.model.ResponseData;
@@ -36,14 +38,23 @@ public class Main {
         var jsonBookName = api.fetch(BASE_URL + "?search=" + bookName.replace(" ", "+"));
         var responseBookName = convertResponse.fetch(jsonBookName, ResponseData.class);
         Optional<BookData> bookNameOptional = responseBookName.booksResults().stream()
-        .filter(book -> book.title().toUpperCase().contains(bookName.toUpperCase()))
-        .findFirst();
+            .filter(book -> book.title().toUpperCase().contains(bookName.toUpperCase()))
+            .findFirst();
 
         if (bookNameOptional.isPresent()) {
-            System.out.println("Book found");
+            System.out.println("\nBook found");
             System.out.println(bookNameOptional.get());
         } else {
             System.out.println(bookName + " not found");
         }
+
+        // Statistics
+        DoubleSummaryStatistics est = response.booksResults().stream()
+            .filter(book -> book.downloads() > 0)
+            .collect(Collectors.summarizingDouble(BookData::downloads));
+        System.out.println("\nAverage downloads: " + est.getAverage());
+        System.out.println("Most downloads: " + est.getMax());
+        System.out.println("Least downloads: " + est.getMin());
+        System.out.println("Book data set size: " + est.getCount());
     }
 }
