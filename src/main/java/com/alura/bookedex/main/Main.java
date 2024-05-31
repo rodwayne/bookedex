@@ -56,5 +56,15 @@ public class Main {
         System.out.println("Most downloads: " + est.getMax());
         System.out.println("Least downloads: " + est.getMin());
         System.out.println("Book data set size: " + est.getCount());
+
+        // TODO: Search books by realeaseDate
+        System.out.println("Search books by release year: ");
+        var year = input.nextLine();
+        var jsonYear = api.fetch(BASE_URL + "?author_year_start=" + year + "&author_year_end=" + year);
+        var responseYear = convertResponse.fetch(jsonYear, ResponseData.class);
+        System.out.println("Books dating from " + year);
+        responseYear.booksResults().stream()
+            .map(book -> book.title())
+            .forEach(System.out::println);
     }
 }
