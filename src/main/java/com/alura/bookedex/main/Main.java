@@ -1,5 +1,8 @@
 package com.alura.bookedex.main;
 
+import java.util.Comparator;
+
+import com.alura.bookedex.model.BookData;
 import com.alura.bookedex.model.ResponseData;
 import com.alura.bookedex.service.Api;
 import com.alura.bookedex.service.ConvertResponse;
@@ -18,6 +21,10 @@ public class Main {
 
         // Top 10 most downloaded titles
         System.out.println("Top 10 books");
-        
+        response.booksResults().stream()
+        .sorted(Comparator.comparing(BookData::downloads).reversed())
+        .limit(10)
+        .map(book -> book.title().toUpperCase())
+        .forEach(System.out::println);
     }
 }
